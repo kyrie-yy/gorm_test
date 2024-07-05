@@ -7,3 +7,5 @@ require (
 	github.com/jinzhu/now v1.1.5
 	golang.org/x/text v0.14.0
 )
+
+require github.com/google/uuid v1.6.0
