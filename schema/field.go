@@ -896,7 +896,7 @@ func (field *Field) setupValuerAndSetter() {
 					if !reflectV.IsValid() {
 						field.ReflectValueOf(ctx, value).Set(reflect.New(field.FieldType).Elem())
 					} else if reflectV.Kind() == reflect.Ptr && reflectV.IsNil() {
-						if field.FieldType.Elem().Kind() == reflect.Array {
+						if field.FieldType.Elem().Kind() == reflect.Array && field.OwnerSchema == nil {
 							field.ReflectValueOf(ctx, value).Set(reflectV)
 						}
 					} else if reflectV.Type().AssignableTo(field.FieldType) {
