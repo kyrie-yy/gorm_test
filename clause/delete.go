@@ -2,6 +2,7 @@ package clause
 
 type Delete struct {
 	Modifier string
+	Table    string
 }
 
 func (d Delete) Name() string {
@@ -14,6 +15,10 @@ func (d Delete) Build(builder Builder) {
 	if d.Modifier != "" {
 		builder.WriteByte(' ')
 		builder.WriteString(d.Modifier)
+	}
+	if d.Table != "" {
+		builder.WriteByte(' ')
+		builder.WriteQuoted(d.Table)
 	}
 }
 
