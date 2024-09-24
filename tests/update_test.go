@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/utils"
@@ -185,21 +185,18 @@ func TestUpdates(t *testing.T) {
 	user3.Age += 100
 	AssertObjEqual(t, user4, user3, "UpdatedAt", "Age")
 
-	// Updates() with map and uuid.UUID - Case 1 - Update with UUID value
-	uuidVal, uuidErr := uuid.NewUUID()
-	if uuidErr != nil {
-		t.Errorf("No error should occur while generating UUID, but got %v", uuidErr)
-	}
+	// Updates() with map and datatypes.UUID - Case 1 - Update with UUID value
+	uuidVal := datatypes.NewUUIDv4()
 	tx := DB.Model(&user4)
-	uuidErr = tx.Updates(map[string]interface{}{"user_uuid": uuidVal}).Error
+	uuidErr := tx.Updates(map[string]interface{}{"user_uuid": uuidVal}).Error
 	if uuidErr != nil {
 		t.Errorf("No error should occur while updating with UUID value, but got %v", uuidErr)
 	}
 	// Expecting the model object (user4) to reflect the UUID value assignment.
 	AssertEqual(t, user4.UserUUID, uuidVal)
 
-	// Updates() with map and uuid.UUID - Case 2 - Update with UUID nil pointer
-	var nilUUIDPtr *uuid.UUID = nil
+	// Updates() with map and datatypes.UUID - Case 2 - Update with UUID nil pointer
+	var nilUUIDPtr *datatypes.UUID = nil
 	uuidErr = tx.Updates(map[string]interface{}{"user_uuid": nilUUIDPtr}).Error
 	if uuidErr != nil {
 		t.Errorf("No error should occur while updating with nil UUID pointer, but got %v", uuidErr)
@@ -207,12 +204,12 @@ func TestUpdates(t *testing.T) {
 	// Expecting the model object (user4) to reflect the UUID nil pointer assignment.
 	AssertEqual(t, user4.UserUUID, nilUUIDPtr)
 
-	// Updates() with map and uuid.UUID - Case 3 - Update with a non-nil UUID pointer
-	uuidVal2, uuidErr := uuid.NewUUID()
+	// Updates() with map and datatypes.UUID - Case 3 - Update with a non-nil UUID pointer
+	uuidVal2 := datatypes.NewUUIDv1()
 	if uuidErr != nil {
 		t.Errorf("No error should occur while generating UUID, but got %v", uuidErr)
 	}
-	var nonNilUUIDPtr *uuid.UUID = &uuidVal2
+	var nonNilUUIDPtr *datatypes.UUID = &uuidVal2
 	uuidErr = tx.Updates(map[string]interface{}{"user_uuid": nonNilUUIDPtr}).Error
 	if uuidErr != nil {
 		t.Errorf("No error should occur while updating with non-nil UUID pointer, but got %v", uuidErr)
